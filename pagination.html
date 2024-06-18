@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="pagination.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="pagination">
+      <button class="btn leftButton">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="btn-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 19.5 8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+      <div class="numberLine"></div>
+      <button class="btn rightButton">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="btn-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m8.25 4.5 7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <script>
+      const numberLineArray = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23,
+      ];
+      // , 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+      // 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+      // 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+      // 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
+
+      let currentIndex = 0;
+      let tabNum = 0;
+
+      const numberLine = document.querySelector(".numberLine");
+      const endNumber = document.querySelector(".endNumber");
+      const maxTabs = Math.floor((numberLineArray.length - 1) / 8);
+      let numPerRow = 0;
+      let bIsOutOfRange = false;
+
+      numberLine.innerHTML = "";
+
+      for (number in numberLineArray) {
+        number = Number(number) + 1;
+        numberLine.innerHTML += `<button class="number">
+          <p class="number-text">${number}</p>
+        </button>`;
+      }
+
+      const leftButton = document.querySelector(".leftButton");
+      const rightButton = document.querySelector(".rightButton");
+
+      leftButton.addEventListener("click", function () {
+        if (tabNum !== 0) {
+          numberLine.scrollLeft -= 376;
+          tabNum -= 1;
+          console.log("left");
+          updateTabCurrentIndex("left");
+        }
+      });
+
+      rightButton.addEventListener("click", function () {
+        if (tabNum !== maxTabs) {
+          numberLine.scrollLeft += 376;
+          tabNum += 1;
+          console.log("right");
+          updateTabCurrentIndex("right");
+        }
+      });
+
+      const smallButtons = document.querySelectorAll(".number");
+
+      for (let i = 0; i < smallButtons.length; ++i) {
+        smallButtons[i].addEventListener("click", function () {
+          smallButtons[currentIndex].classList.toggle("number-selected", false);
+          smallButtons[i].classList.toggle("number-selected", true);
+          currentIndex = i;
+        });
+      }
+
+      smallButtons[0].classList.toggle("number-selected", true);
+
+      function updateTabCurrentIndex(type) {
+        let newIndex = 0;
+        numPerRow = smallButtons.length - 1;
+        let indexAmount = tabNum * 8;
+        console.log(
+          `${numPerRow} - ${indexAmount} = ${numPerRow - indexAmount}`
+        );
+
+        if (type === "right") {
+          newIndex = numPerRow - indexAmount;
+          if (newIndex >= 8) {
+            newIndex = tabNum * 8;
+          } else {
+            newIndex = maxTabs * 8 - 1;
+            console.log(`${maxTabs} * 8 - 1= ${maxTabs * 8 - 1}`);
+            bIsOutOfRange = true;
+          }
+        } else {
+          if (bIsOutOfRange) {
+            newIndex = tabNum * 8 - 1;
+            bIsOutOfRange = false;
+          } else {
+            if (newIndex >= 8) {
+              newIndex = tabNum * 8;
+            }
+          }
+        }
+
+        smallButtons[currentIndex].classList.toggle("number-selected", false);
+        smallButtons[newIndex].classList.toggle("number-selected", true);
+        currentIndex = newIndex;
+        console.log(currentIndex);
+      }
+    </script>
+  </body>
+</html>

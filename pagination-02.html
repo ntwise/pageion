@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="pagination-02.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="pagination">
+      <button class="btn leftButton">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="btn-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 19.5 8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+      <div class="numberLine">
+        <button class="number button1">
+          <p class="number-text">1</p>
+        </button>
+        <button class="number button2">
+          <p class="number-text">2</p>
+        </button>
+        <button class="number button3">
+          <p class="number-text">3</p>
+        </button>
+        <button class="number button4">
+          <p class="number-text">4</p>
+        </button>
+        <button class="number button5">
+          <p class="number-text">5</p>
+        </button>
+        <button class="number button6">
+          <p class="number-text">6</p>
+        </button>
+        <button class="number button7">
+          <p class="number-text">...</p>
+        </button>
+        <button class="number button8">
+          <p class="number-text endNumber">23</p>
+        </button>
+      </div>
+      <button class="btn rightButton">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="btn-icon"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m8.25 4.5 7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <script>
+      const numberLineArray = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23,
+      ];
+      let currentIndex = 0;
+      let tabNum = 0;
+      let bIsOutOfRange = false;
+
+      const numberLine = document.querySelector(".numberLine");
+      const maxTabs = Math.ceil(numberLineArray.length / 8);
+      const leftButton = document.querySelector(".leftButton");
+      const rightButton = document.querySelector(".rightButton");
+
+      const button1 = document.querySelector(".button1");
+      const button2 = document.querySelector(".button2");
+      const button3 = document.querySelector(".button3");
+      const button4 = document.querySelector(".button4");
+      const button5 = document.querySelector(".button5");
+      const button6 = document.querySelector(".button6");
+      const button7 = document.querySelector(".button7");
+      const button8 = document.querySelector(".button8");
+
+      const specificButton = [
+        button1,
+        button2,
+        button3,
+        button4,
+        button5,
+        button6,
+        button7,
+        button8,
+      ];
+
+      const smallButtons = document.querySelectorAll(".number");
+
+      button1.classList.toggle("number-selected");
+
+      for (let i = 0; i < smallButtons.length; ++i) {
+        smallButtons[i].addEventListener("click", function () {
+          smallButtons[currentIndex].classList.toggle("number-selected", false);
+          smallButtons[i].classList.toggle("number-selected", true);
+          currentIndex = i;
+        });
+      }
+
+      leftButton.addEventListener("click", function () {
+        if (tabNum !== 0) {
+          tabNum -= 1;
+          let newIndex = tabNum * 6;
+          let checkValue = numberLineArray.length;
+          console.log(checkValue);
+          if (checkValue < 8) {
+            newIndex = 0;
+          }
+
+          UpdateButtons(newIndex, bIsOutOfRange);
+        }
+      });
+
+      rightButton.addEventListener("click", function () {
+        if (tabNum !== maxTabs) {
+          tabNum += 1;
+          let newIndex = tabNum * 6;
+          let checkValue = numberLineArray.length - 1 - newIndex;
+          console.log(checkValue);
+          if (checkValue < 8) {
+            newIndex = numberLineArray.length - 8;
+            tabNum = maxTabs;
+            bIsOutOfRange = true;
+          }
+
+          UpdateButtons(newIndex, bIsOutOfRange);
+        }
+      });
+
+      function UpdateButtons(newIndex, boolVal) {
+        let incrementValue = Number(newIndex);
+        for (i in specificButton) {
+          if (bIsOutOfRange) {
+            specificButton[6].disabled = false;
+            specificButton[6].style.cursor = "pointer";
+            switch (Number(i)) {
+              case 0:
+                specificButton[0].children[0].innerHTML = numberLineArray[0];
+                incrementValue += 1;
+
+                break;
+              case 1:
+                specificButton[1].children[0].innerHTML = "...";
+                specificButton[1].children[0].innerHTML = "...";
+                specificButton[1].disabled = true;
+                specificButton[1].style.cursor = "not-allowed";
+                incrementValue += 1;
+                break;
+              default:
+                specificButton[i].children[0].innerHTML =
+                  numberLineArray[incrementValue];
+                incrementValue += 1;
+            }
+          } else {
+            specificButton[1].disabled = false;
+            specificButton[1].style.cursor = "pointer";
+            switch (Number(i)) {
+              case 6:
+                specificButton[6].children[0].innerHTML = "...";
+                specificButton[6].disabled = true;
+                specificButton[6].style.cursor = "not-allowed";
+                console.log("case 6");
+                break;
+              case 7:
+                specificButton[7].children[0].innerHTML =
+                  numberLineArray[numberLineArray.length - 1];
+                console.log("case 7");
+                break;
+              default:
+                console.log(i);
+                specificButton[i].children[0].innerHTML =
+                  numberLineArray[incrementValue];
+                incrementValue += 1;
+            }
+          }
+        }
+        bIsOutOfRange = false;
+      }
+
+      UpdateButtons(0, false);
+    </script>
+  </body>
+</html>
